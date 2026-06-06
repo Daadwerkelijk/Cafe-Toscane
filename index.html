@@ -10,18 +10,11 @@
   <meta name="apple-mobile-web-app-title" content="Espresso" />
   <title>Espresso Logboek</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      background: #110d07;
-      font-family: 'Georgia', 'Times New Roman', serif;
-      color: #e8d5b0;
-      padding-bottom: 40px;
-    }
+    body { min-height: 100vh; background: #110d07; font-family: 'Georgia','Times New Roman',serif; color: #e8d5b0; padding-bottom: 40px; }
 
-    /* ── Header ── */
+    /* Header */
     header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 24px 24px 18px; border-bottom: 1px solid #3a2a14;
@@ -34,122 +27,78 @@
     .subtitle { font-size: 0.75rem; color: #8a6840; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
     #status-text { font-size: 0.75rem; color: #8a6840; font-style: italic; letter-spacing: 0.06em; opacity: 0; transition: opacity 0.4s; }
 
-    .btn-primary {
-      background: #c8a96e; color: #110d07; border: none; border-radius: 6px;
-      padding: 10px 20px; font-family: Georgia, serif; font-size: 0.9rem;
-      font-weight: bold; cursor: pointer; letter-spacing: 0.04em;
-    }
+    .btn-primary { background: #c8a96e; color: #110d07; border: none; border-radius: 6px; padding: 10px 20px; font-family: Georgia,serif; font-size: 0.9rem; font-weight: bold; cursor: pointer; letter-spacing: 0.04em; }
     .btn-primary:hover { opacity: 0.85; }
-    .btn-ghost {
-      background: transparent; color: #8a6840; border: 1px solid #3a2a14;
-      border-radius: 6px; padding: 9px 18px; font-family: Georgia, serif; font-size: 0.9rem; cursor: pointer;
-    }
+    .btn-ghost { background: transparent; color: #8a6840; border: 1px solid #3a2a14; border-radius: 6px; padding: 9px 18px; font-family: Georgia,serif; font-size: 0.9rem; cursor: pointer; }
     .btn-ghost:hover { opacity: 0.85; }
-    .btn-danger {
-      background: transparent; color: #e07060; border: 1px solid #8a3030;
-      border-radius: 6px; padding: 10px; font-family: Georgia, serif; font-size: 0.88rem;
-      cursor: pointer; width: 100%; margin-top: 8px;
-    }
+    .btn-danger { background: transparent; color: #e07060; border: 1px solid #8a3030; border-radius: 6px; padding: 10px; font-family: Georgia,serif; font-size: 0.88rem; cursor: pointer; width: 100%; margin-top: 8px; }
     .btn-danger:hover { background: #2a1010; }
 
-    /* ── Config screen ── */
-    #config-screen {
-      display: none;
-      max-width: 640px; margin: 40px auto; padding: 0 24px;
-    }
-    .config-card {
-      background: #1e1510; border: 1px solid #3a2a14; border-radius: 12px; padding: 28px;
-    }
+    /* Config */
+    #config-screen { display: none; max-width: 640px; margin: 40px auto; padding: 0 24px; }
+    .config-card { background: #1e1510; border: 1px solid #3a2a14; border-radius: 12px; padding: 28px; }
     .config-card h2 { color: #c8a96e; font-size: 1.1rem; margin-bottom: 22px; letter-spacing: 0.04em; }
     .config-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
     .config-field label { font-size: 0.7rem; color: #8a6840; letter-spacing: 0.12em; text-transform: uppercase; }
-    .config-field input {
-      background: #110d07; border: 1px solid #3a2a14; border-radius: 6px;
-      color: #e8d5b0; padding: 10px 12px; font-family: Georgia, serif; font-size: 0.88rem;
-      outline: none; width: 100%;
-    }
+    .config-field input { background: #110d07; border: 1px solid #3a2a14; border-radius: 6px; color: #e8d5b0; padding: 10px 12px; font-family: Georgia,serif; font-size: 0.88rem; outline: none; width: 100%; }
     .config-field input:focus { border-color: #c8a96e; }
-    #config-status {
-      font-size: 0.82rem; margin: 12px 0; min-height: 1.2em;
-      letter-spacing: 0.04em;
-    }
+    #config-status { font-size: 0.82rem; margin: 12px 0; min-height: 1.2em; letter-spacing: 0.04em; }
     .status-ok  { color: #7ec87e; }
     .status-err { color: #e07060; }
     .status-testing { color: #8a6840; font-style: italic; }
-    #connected-label {
-      font-size: 0.78rem; color: #7ec87e; margin-bottom: 14px;
-      letter-spacing: 0.04em; display: none;
-    }
+    #connected-label { font-size: 0.78rem; color: #7ec87e; margin-bottom: 14px; letter-spacing: 0.04em; display: none; }
 
-    /* ── Error banner ── */
-    #error-banner {
-      display: none; margin: 16px 24px; padding: 12px 18px;
-      background: #2a1010; border: 1px solid #8a3030;
-      border-radius: 8px; color: #e07060; font-size: 0.88rem; line-height: 1.5;
-    }
+    /* Error banner */
+    #error-banner { display: none; margin: 16px 24px; padding: 12px 18px; background: #2a1010; border: 1px solid #8a3030; border-radius: 8px; color: #e07060; font-size: 0.88rem; line-height: 1.5; }
 
-    /* ── Entry form ── */
-    #form-card {
-      display: none; margin: 20px 24px;
-      background: #1e1510; border: 1px solid #3a2a14; border-radius: 10px; padding: 20px;
-    }
-    .form-title { font-size: 1rem; color: #c8a96e; margin-bottom: 16px; font-weight: bold; letter-spacing: 0.04em; }
+    /* Form card */
+    #form-card { display: none; margin: 20px 24px; background: #1e1510; border: 1px solid #3a2a14; border-radius: 10px; padding: 22px; }
+    .form-title { font-size: 1rem; color: #c8a96e; margin-bottom: 18px; font-weight: bold; letter-spacing: 0.04em; }
+
+    /* Sectie labels in form */
+    .form-section { font-size: 0.7rem; color: #c8a96e; letter-spacing: 0.14em; text-transform: uppercase; margin: 18px 0 10px; border-bottom: 1px solid #3a2a14; padding-bottom: 6px; }
+    .form-section:first-of-type { margin-top: 0; }
+
     .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
     .form-field { display: flex; flex-direction: column; gap: 4px; }
     label { font-size: 0.7rem; color: #8a6840; letter-spacing: 0.1em; text-transform: uppercase; }
-    input[type="text"], input[type="date"] {
-      background: #110d07; border: 1px solid #3a2a14; border-radius: 5px;
-      color: #e8d5b0; padding: 8px 10px; font-family: Georgia, serif;
-      font-size: 0.88rem; outline: none; width: 100%;
-    }
+    input[type="text"] { background: #110d07; border: 1px solid #3a2a14; border-radius: 5px; color: #e8d5b0; padding: 8px 10px; font-family: Georgia,serif; font-size: 0.88rem; outline: none; width: 100%; }
     input:focus { border-color: #c8a96e; }
-    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6) sepia(0.3); }
-    .form-actions { display: flex; gap: 12px; margin-top: 18px; }
+    .form-actions { display: flex; gap: 12px; margin-top: 20px; }
 
-    /* ── Table ── */
+    /* Table */
     #loading { text-align: center; color: #8a6840; padding: 60px; font-size: 1rem; letter-spacing: 0.1em; }
-    .table-wrapper {
-      overflow-x: auto; margin: 20px 24px 0; border-radius: 10px; border: 1px solid #3a2a14;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .table-wrapper { overflow-x: auto; margin: 20px 24px 0; border-radius: 10px; border: 1px solid #3a2a14; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     thead tr { background: #2a1a08; }
-    th {
-      color: #c8a96e; padding: 12px 13px; text-align: left; font-weight: normal;
-      letter-spacing: 0.08em; font-size: 0.72rem; text-transform: uppercase;
-      border-bottom: 1px solid #3a2a14; white-space: nowrap;
-    }
-    td { padding: 10px 13px; border-bottom: 1px solid #261c0e; vertical-align: top; color: #e8d5b0; line-height: 1.4; }
+
+    /* Groeperings-headers */
+    th.group-header { background: #1e1208; color: #8a6840; text-align: center; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid #3a2a14; border-right: 1px solid #3a2a14; }
+    th.group-header:last-child { border-right: none; }
+    th { color: #c8a96e; padding: 10px 12px; text-align: left; font-weight: normal; letter-spacing: 0.07em; font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px solid #3a2a14; white-space: nowrap; }
+    th.sep { border-left: 1px solid #3a2a14; }
+
+    td { padding: 10px 12px; border-bottom: 1px solid #261c0e; vertical-align: top; color: #e8d5b0; line-height: 1.4; }
+    td.sep { border-left: 1px solid #2a1e10; }
     tbody tr:nth-child(even) { background: #1e1510; }
     tbody tr:nth-child(odd)  { background: #1a1208; }
     tbody tr:hover td { background: rgba(200,169,110,0.05); }
-    .score-badge {
-      background: #3a2a08; border: 1px solid #c8a96e; color: #c8a96e;
-      border-radius: 12px; padding: 2px 10px; font-size: 0.8rem; white-space: nowrap;
-    }
-    .origine-cell { font-weight: bold; color: #d4b87a; }
+
+    .score-badge { background: #3a2a08; border: 1px solid #c8a96e; color: #c8a96e; border-radius: 12px; padding: 2px 10px; font-size: 0.8rem; white-space: nowrap; }
+    .naam-cell { font-weight: bold; color: #d4b87a; }
     .empty-cell { color: #4a3a24; }
     .actions { display: flex; gap: 6px; }
-    .edit-btn, .del-btn {
-      background: transparent; border: 1px solid #3a2a14;
-      border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 0.88rem;
-    }
+    .edit-btn, .del-btn { background: transparent; border: 1px solid #3a2a14; border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 0.88rem; }
     .edit-btn:hover, .del-btn:hover { border-color: #c8a96e; }
     .empty-row td { text-align: center; color: #555; font-style: italic; padding: 36px; }
 
     footer { text-align: center; color: #4a3a24; font-size: 0.75rem; margin-top: 22px; letter-spacing: 0.1em; }
 
-    /* ── Toast ── */
-    #toast {
-      display: none; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-      background: #c8a96e; color: #110d07; padding: 10px 24px; border-radius: 20px;
-      font-family: Georgia, serif; font-size: 0.88rem; font-weight: bold;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 1000; white-space: nowrap;
-      animation: fadeSlideUp 0.3s ease;
-    }
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translate(-50%, 14px); }
-      to   { opacity: 1; transform: translate(-50%, 0); }
-    }
+    /* Toast */
+    #toast { display: none; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: #c8a96e; color: #110d07; padding: 10px 24px; border-radius: 20px; font-family: Georgia,serif; font-size: 0.88rem; font-weight: bold; box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 1000; white-space: nowrap; animation: fadeSlideUp 0.3s ease; }
+    @keyframes fadeSlideUp { from { opacity:0; transform:translate(-50%,14px); } to { opacity:1; transform:translate(-50%,0); } }
     ::-webkit-scrollbar { height: 6px; width: 6px; background: #1a1208; }
     ::-webkit-scrollbar-thumb { background: #3a2a14; border-radius: 3px; }
   </style>
@@ -171,7 +120,7 @@
   </div>
 </header>
 
-<!-- ── Config screen ── -->
+<!-- Config -->
 <div id="config-screen">
   <div class="config-card">
     <h2>🔗 Supabase koppeling</h2>
@@ -190,23 +139,44 @@
   </div>
 </div>
 
-<!-- ── Main app ── -->
+<!-- App -->
 <div id="app-screen" style="display:none;">
   <div id="error-banner"></div>
 
   <div id="form-card">
     <div class="form-title" id="form-title">➕ Nieuwe koffiesessie</div>
+
+    <div class="form-section">Koffie</div>
     <div class="form-grid">
-      <div class="form-field"><label>Datum</label><input type="date" id="f-datum" /></div>
-      <div class="form-field"><label>Koffie / Origine</label><input type="text" id="f-origine" placeholder="bijv. Costa Rica" /></div>
+      <div class="form-field"><label>Leverancier</label><input type="text" id="f-leverancier" placeholder="bijv. Lot61" /></div>
+      <div class="form-field"><label>Naam</label><input type="text" id="f-naam" placeholder="bijv. Yirgacheffe" /></div>
+      <div class="form-field"><label>Boon</label><input type="text" id="f-boon" placeholder="bijv. Arabica" /></div>
+      <div class="form-field"><label>Maalrichting</label><input type="text" id="f-maalrichting" placeholder="bijv. fijner" /></div>
       <div class="form-field"><label>Maalgraad</label><input type="text" id="f-maalgraad" placeholder="bijv. 14" /></div>
-      <div class="form-field"><label>Gram gemalen</label><input type="text" id="f-gram_gemalen" placeholder="bijv. 18g" /></div>
-      <div class="form-field"><label>Gram espresso</label><input type="text" id="f-gram_espresso" placeholder="bijv. 36g" /></div>
-      <div class="form-field"><label>Looptijd (sec)</label><input type="text" id="f-looptijd" placeholder="bijv. 28" /></div>
-      <div class="form-field"><label>Crème laag</label><input type="text" id="f-creme_laag" placeholder="bijv. dik / dun" /></div>
+    </div>
+
+    <div class="form-section">Dubbele dosering</div>
+    <div class="form-grid-2">
+      <div class="form-field"><label>Maal seconde</label><input type="text" id="f-maal_sec_dubbel" placeholder="sec" /></div>
+      <div class="form-field"><label>Gram espresso</label><input type="text" id="f-gram_dubbel" placeholder="g" /></div>
+      <div class="form-field"><label>Looptijd (sec)</label><input type="text" id="f-looptijd_dubbel" placeholder="sec" /></div>
+      <div class="form-field"><label>Crème laag</label><input type="text" id="f-creme_dubbel" placeholder="bijv. dik" /></div>
+    </div>
+
+    <div class="form-section">Enkele dosering</div>
+    <div class="form-grid-2">
+      <div class="form-field"><label>Maal seconde</label><input type="text" id="f-maal_sec_enkel" placeholder="sec" /></div>
+      <div class="form-field"><label>Gram espresso</label><input type="text" id="f-gram_enkel" placeholder="g" /></div>
+      <div class="form-field"><label>Looptijd (sec)</label><input type="text" id="f-looptijd_enkel" placeholder="sec" /></div>
+      <div class="form-field"><label>Crème laag</label><input type="text" id="f-creme_enkel" placeholder="bijv. dun" /></div>
+    </div>
+
+    <div class="form-section">Beoordeling</div>
+    <div class="form-grid">
       <div class="form-field"><label>Score</label><input type="text" id="f-score" placeholder="bijv. 8.5" /></div>
       <div class="form-field"><label>Notities</label><input type="text" id="f-notities" placeholder="vrije notitie" /></div>
     </div>
+
     <div class="form-actions">
       <button class="btn-primary" id="save-btn" onclick="handleSave()">Toevoegen</button>
       <button class="btn-ghost" onclick="cancelForm()">Annuleren</button>
@@ -219,16 +189,28 @@
     <table>
       <thead>
         <tr>
-          <th style="min-width:110px">Datum</th>
-          <th style="min-width:150px">Koffie / Origine</th>
-          <th style="min-width:95px">Maalgraad</th>
-          <th style="min-width:115px">Gram gemalen</th>
-          <th style="min-width:115px">Gram espresso</th>
-          <th style="min-width:115px">Looptijd (sec)</th>
-          <th style="min-width:105px">Crème laag</th>
-          <th style="min-width:85px">Score</th>
-          <th style="min-width:200px">Notities</th>
-          <th style="min-width:80px">Acties</th>
+          <th colspan="5" class="group-header">Koffie</th>
+          <th colspan="4" class="group-header sep">Dubbel</th>
+          <th colspan="4" class="group-header sep">Enkel</th>
+          <th colspan="3" class="group-header sep">Beoordeling</th>
+        </tr>
+        <tr>
+          <th>Leverancier</th>
+          <th>Naam</th>
+          <th>Boon</th>
+          <th>Maalrichting</th>
+          <th>Maalgraad</th>
+          <th class="sep">Maal sec</th>
+          <th>Gram</th>
+          <th>Looptijd</th>
+          <th>Crème</th>
+          <th class="sep">Maal sec</th>
+          <th>Gram</th>
+          <th>Looptijd</th>
+          <th>Crème</th>
+          <th class="sep">Score</th>
+          <th>Notities</th>
+          <th>Acties</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -243,31 +225,25 @@
   const { createClient } = supabase;
   const LS_URL = 'espresso_sb_url';
   const LS_KEY = 'espresso_sb_key';
-  const fields = ['datum','origine','maalgraad','gram_gemalen','gram_espresso','looptijd','creme_laag','score','notities'];
-
+  const fields = ['leverancier','naam','boon','maalrichting','maalgraad',
+                  'maal_sec_dubbel','gram_dubbel','looptijd_dubbel','creme_dubbel',
+                  'maal_sec_enkel','gram_enkel','looptijd_enkel','creme_enkel',
+                  'score','notities'];
   let db = null;
   let editId = null;
   let toastTimer = null;
 
-  // ── Init ──────────────────────────────────────────────────────────────────
   function init() {
     const url = localStorage.getItem(LS_URL);
     const key = localStorage.getItem(LS_KEY);
-    if (url && key) {
-      db = createClient(url, key);
-      showApp();
-      load();
-    } else {
-      showConfig();
-    }
+    if (url && key) { db = createClient(url, key); showApp(); load(); }
+    else { showConfig(); }
   }
 
-  // ── Screens ───────────────────────────────────────────────────────────────
   function showApp() {
     document.getElementById('config-screen').style.display = 'none';
     document.getElementById('app-screen').style.display = 'block';
   }
-
   function showConfig() {
     document.getElementById('app-screen').style.display = 'none';
     document.getElementById('config-screen').style.display = 'block';
@@ -276,62 +252,34 @@
     document.getElementById('cfg-url').value = url;
     document.getElementById('cfg-key').value = key;
     const label = document.getElementById('connected-label');
-    if (url) {
-      const project = url.replace('https://','').split('.')[0];
-      label.textContent = '✓ Gekoppeld aan ' + project;
-      label.style.display = 'block';
-    } else {
-      label.style.display = 'none';
-    }
+    if (url) { const p = url.replace('https://','').split('.')[0]; label.textContent = '✓ Gekoppeld aan ' + p; label.style.display = 'block'; }
+    else { label.style.display = 'none'; }
     document.getElementById('config-status').textContent = '';
   }
-
   function openConfig() { showConfig(); }
 
-  // ── Config: save & test ───────────────────────────────────────────────────
   async function saveAndTest() {
     const url = document.getElementById('cfg-url').value.trim();
     const key = document.getElementById('cfg-key').value.trim();
     const statusEl = document.getElementById('config-status');
-
-    if (!url || !key) {
-      statusEl.className = 'status-err';
-      statusEl.textContent = '⚠️ Vul beide velden in.';
-      return;
-    }
-
-    statusEl.className = 'status-testing';
-    statusEl.textContent = 'Verbinding testen…';
-
+    if (!url || !key) { statusEl.className = 'status-err'; statusEl.textContent = '⚠️ Vul beide velden in.'; return; }
+    statusEl.className = 'status-testing'; statusEl.textContent = 'Verbinding testen…';
     try {
       const testClient = createClient(url, key);
       const { error } = await testClient.from('espresso_sessies').select('id').limit(1);
       if (error) throw error;
-
-      localStorage.setItem(LS_URL, url);
-      localStorage.setItem(LS_KEY, key);
-      db = testClient;
-
-      const project = url.replace('https://','').split('.')[0];
-      statusEl.className = 'status-ok';
-      statusEl.textContent = '✓ Verbonden met ' + project;
-
+      localStorage.setItem(LS_URL, url); localStorage.setItem(LS_KEY, key); db = testClient;
+      const p = url.replace('https://','').split('.')[0];
+      statusEl.className = 'status-ok'; statusEl.textContent = '✓ Verbonden met ' + p;
       const label = document.getElementById('connected-label');
-      label.textContent = '✓ Gekoppeld aan ' + project;
-      label.style.display = 'block';
-
+      label.textContent = '✓ Gekoppeld aan ' + p; label.style.display = 'block';
       setTimeout(() => { showApp(); load(); }, 900);
-    } catch (e) {
-      statusEl.className = 'status-err';
-      statusEl.textContent = '❌ Verbinding mislukt. Controleer je URL en key.';
-    }
+    } catch(e) { statusEl.className = 'status-err'; statusEl.textContent = '❌ Verbinding mislukt. Controleer je URL en key.'; }
   }
 
   function removeConnection() {
     if (!confirm('Verbinding verwijderen? Je koffiedata in Supabase blijft bewaard.')) return;
-    localStorage.removeItem(LS_URL);
-    localStorage.removeItem(LS_KEY);
-    db = null;
+    localStorage.removeItem(LS_URL); localStorage.removeItem(LS_KEY); db = null;
     document.getElementById('connected-label').style.display = 'none';
     document.getElementById('config-status').textContent = '';
     document.getElementById('cfg-url').value = '';
@@ -339,38 +287,23 @@
     showConfig();
   }
 
-  // ── Toast / Status ────────────────────────────────────────────────────────
   function showToast(msg) {
     const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.style.display = 'block';
-    el.style.animation = 'none';
-    el.offsetHeight;
-    el.style.animation = 'fadeSlideUp 0.3s ease';
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.style.display = 'none', 2400);
+    el.textContent = msg; el.style.display = 'block'; el.style.animation = 'none';
+    el.offsetHeight; el.style.animation = 'fadeSlideUp 0.3s ease';
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.display = 'none', 2400);
   }
-
   function setStatus(msg, color) {
     const el = document.getElementById('status-text');
-    el.textContent = msg;
-    el.style.color = color || '#8a6840';
-    el.style.opacity = msg ? '1' : '0';
+    el.textContent = msg; el.style.color = color || '#8a6840'; el.style.opacity = msg ? '1' : '0';
   }
 
-  // ── Load ──────────────────────────────────────────────────────────────────
   async function load() {
     document.getElementById('loading').style.display = 'block';
     document.getElementById('table-wrapper').style.display = 'none';
-
-    const { data, error } = await db
-      .from('espresso_sessies')
-      .select('*')
-      .order('datum', { ascending: false });
-
+    const { data, error } = await db.from('espresso_sessies').select('*').order('id', { ascending: false });
     document.getElementById('loading').style.display = 'none';
     document.getElementById('table-wrapper').style.display = 'block';
-
     if (error) {
       document.getElementById('error-banner').style.display = 'block';
       document.getElementById('error-banner').textContent = '⚠️ Kan geen data ophalen. Controleer je Supabase instellingen via ⚙️.';
@@ -380,31 +313,38 @@
     }
   }
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  function cel(val) { return val || '<span class="empty-cell">—</span>'; }
+
   function renderTable(data) {
     const tbody = document.getElementById('tbody');
     tbody.innerHTML = '';
     if (!data || data.length === 0) {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="10">Nog geen sessies. Voeg je eerste koffie toe!</td></tr>';
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="16">Nog geen sessies. Voeg je eerste koffie toe!</td></tr>';
       document.getElementById('footer').textContent = '0 sessies gelogd';
       return;
     }
     data.forEach(row => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${row.datum || '<span class="empty-cell">—</span>'}</td>
-        <td><span class="origine-cell">${row.origine || ''}</span></td>
-        <td>${row.maalgraad || '<span class="empty-cell">—</span>'}</td>
-        <td>${row.gram_gemalen || '<span class="empty-cell">—</span>'}</td>
-        <td>${row.gram_espresso || '<span class="empty-cell">—</span>'}</td>
-        <td>${row.looptijd || '<span class="empty-cell">—</span>'}</td>
-        <td>${row.creme_laag || '<span class="empty-cell">—</span>'}</td>
-        <td>${row.score ? `<span class="score-badge">${row.score}</span>` : '<span class="empty-cell">—</span>'}</td>
-        <td>${row.notities || '<span class="empty-cell">—</span>'}</td>
+        <td>${cel(row.leverancier)}</td>
+        <td><span class="naam-cell">${row.naam || ''}</span></td>
+        <td>${cel(row.boon)}</td>
+        <td>${cel(row.maalrichting)}</td>
+        <td>${cel(row.maalgraad)}</td>
+        <td class="sep">${cel(row.maal_sec_dubbel)}</td>
+        <td>${cel(row.gram_dubbel)}</td>
+        <td>${cel(row.looptijd_dubbel)}</td>
+        <td>${cel(row.creme_dubbel)}</td>
+        <td class="sep">${cel(row.maal_sec_enkel)}</td>
+        <td>${cel(row.gram_enkel)}</td>
+        <td>${cel(row.looptijd_enkel)}</td>
+        <td>${cel(row.creme_enkel)}</td>
+        <td class="sep">${row.score ? `<span class="score-badge">${row.score}</span>` : '<span class="empty-cell">—</span>'}</td>
+        <td>${cel(row.notities)}</td>
         <td>
           <div class="actions">
-            <button class="edit-btn" onclick="startEdit(${row.id})" title="Bewerken">✏️</button>
-            <button class="del-btn" onclick="handleDelete(${row.id})" title="Verwijderen">🗑️</button>
+            <button class="edit-btn" onclick="startEdit(${row.id})">✏️</button>
+            <button class="del-btn" onclick="handleDelete(${row.id})">🗑️</button>
           </div>
         </td>`;
       tbody.appendChild(tr);
@@ -413,45 +353,33 @@
     document.getElementById('footer').textContent = `${n} sessie${n !== 1 ? 's' : ''} gelogd`;
   }
 
-  // ── Form ──────────────────────────────────────────────────────────────────
   function openAdd() {
     if (!db) { openConfig(); return; }
     editId = null;
-    fields.forEach(f => document.getElementById('f-' + f).value = f === 'datum' ? new Date().toISOString().slice(0,10) : '');
+    fields.forEach(f => document.getElementById('f-' + f).value = '');
     document.getElementById('form-title').textContent = '➕ Nieuwe koffiesessie';
     document.getElementById('save-btn').textContent = 'Toevoegen';
     document.getElementById('form-card').style.display = 'block';
-    document.getElementById('f-origine').focus();
+    document.getElementById('f-leverancier').focus();
   }
-
-  function cancelForm() {
-    document.getElementById('form-card').style.display = 'none';
-    editId = null;
-  }
-
-  function getFormData() {
-    const obj = {};
-    fields.forEach(f => obj[f] = document.getElementById('f-' + f).value.trim());
-    return obj;
-  }
+  function cancelForm() { document.getElementById('form-card').style.display = 'none'; editId = null; }
+  function getFormData() { const obj = {}; fields.forEach(f => obj[f] = document.getElementById('f-' + f).value.trim()); return obj; }
 
   async function handleSave() {
     const data = getFormData();
-    if (!data.origine) { document.getElementById('f-origine').focus(); return; }
+    if (!data.naam) { document.getElementById('f-naam').focus(); return; }
     setStatus('opslaan…');
     if (editId) {
       const { error } = await db.from('espresso_sessies').update(data).eq('id', editId);
-      if (error) { setStatus('❌ fout', '#e07060'); showToast('❌ Fout bij opslaan'); return; }
+      if (error) { setStatus('❌ fout','#e07060'); showToast('❌ Fout bij opslaan'); return; }
       showToast('Wijzigingen opgeslagen ✓');
     } else {
       const { error } = await db.from('espresso_sessies').insert([data]);
-      if (error) { setStatus('❌ fout', '#e07060'); showToast('❌ Fout bij opslaan'); return; }
+      if (error) { setStatus('❌ fout','#e07060'); showToast('❌ Fout bij opslaan'); return; }
       showToast('Sessie toegevoegd ☕');
     }
-    setStatus('✓ opgeslagen');
-    setTimeout(() => setStatus(''), 2000);
-    cancelForm();
-    await load();
+    setStatus('✓ opgeslagen'); setTimeout(() => setStatus(''), 2000);
+    cancelForm(); await load();
   }
 
   async function startEdit(id) {
@@ -469,11 +397,9 @@
     if (!confirm('Sessie verwijderen?')) return;
     const { error } = await db.from('espresso_sessies').delete().eq('id', id);
     if (error) { showToast('❌ Fout bij verwijderen'); return; }
-    showToast('Sessie verwijderd');
-    await load();
+    showToast('Sessie verwijderd'); await load();
   }
 
-  // ── Start ─────────────────────────────────────────────────────────────────
   init();
 </script>
 </body>
