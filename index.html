@@ -13,7 +13,6 @@
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       min-height: 100vh;
       background: #110d07;
@@ -24,58 +23,78 @@
 
     /* ── Header ── */
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 24px 24px 18px;
-      border-bottom: 1px solid #3a2a14;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 24px 18px; border-bottom: 1px solid #3a2a14;
       background: linear-gradient(135deg, #1a0f04 0%, #2a1a08 100%);
-      flex-wrap: wrap;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 10;
     }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .icon { font-size: 2.2rem; }
     .title { font-size: 1.5rem; font-weight: bold; color: #c8a96e; letter-spacing: 0.04em; }
     .subtitle { font-size: 0.75rem; color: #8a6840; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
+    #status-text { font-size: 0.75rem; color: #8a6840; font-style: italic; letter-spacing: 0.06em; opacity: 0; transition: opacity 0.4s; }
 
-    #status-text {
-      font-size: 0.75rem; color: #8a6840; font-style: italic;
-      letter-spacing: 0.06em; opacity: 0; transition: opacity 0.4s;
-    }
-
-    .add-btn {
+    .btn-primary {
       background: #c8a96e; color: #110d07; border: none; border-radius: 6px;
       padding: 10px 20px; font-family: Georgia, serif; font-size: 0.9rem;
       font-weight: bold; cursor: pointer; letter-spacing: 0.04em;
     }
-    .add-btn:hover { opacity: 0.85; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-ghost {
+      background: transparent; color: #8a6840; border: 1px solid #3a2a14;
+      border-radius: 6px; padding: 9px 18px; font-family: Georgia, serif; font-size: 0.9rem; cursor: pointer;
+    }
+    .btn-ghost:hover { opacity: 0.85; }
+    .btn-danger {
+      background: transparent; color: #e07060; border: 1px solid #8a3030;
+      border-radius: 6px; padding: 10px; font-family: Georgia, serif; font-size: 0.88rem;
+      cursor: pointer; width: 100%; margin-top: 8px;
+    }
+    .btn-danger:hover { background: #2a1010; }
+
+    /* ── Config screen ── */
+    #config-screen {
+      display: none;
+      max-width: 640px; margin: 40px auto; padding: 0 24px;
+    }
+    .config-card {
+      background: #1e1510; border: 1px solid #3a2a14; border-radius: 12px; padding: 28px;
+    }
+    .config-card h2 { color: #c8a96e; font-size: 1.1rem; margin-bottom: 22px; letter-spacing: 0.04em; }
+    .config-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .config-field label { font-size: 0.7rem; color: #8a6840; letter-spacing: 0.12em; text-transform: uppercase; }
+    .config-field input {
+      background: #110d07; border: 1px solid #3a2a14; border-radius: 6px;
+      color: #e8d5b0; padding: 10px 12px; font-family: Georgia, serif; font-size: 0.88rem;
+      outline: none; width: 100%;
+    }
+    .config-field input:focus { border-color: #c8a96e; }
+    #config-status {
+      font-size: 0.82rem; margin: 12px 0; min-height: 1.2em;
+      letter-spacing: 0.04em;
+    }
+    .status-ok  { color: #7ec87e; }
+    .status-err { color: #e07060; }
+    .status-testing { color: #8a6840; font-style: italic; }
+    #connected-label {
+      font-size: 0.78rem; color: #7ec87e; margin-bottom: 14px;
+      letter-spacing: 0.04em; display: none;
+    }
 
     /* ── Error banner ── */
     #error-banner {
-      display: none;
-      margin: 16px 24px; padding: 12px 18px;
+      display: none; margin: 16px 24px; padding: 12px 18px;
       background: #2a1010; border: 1px solid #8a3030;
       border-radius: 8px; color: #e07060; font-size: 0.88rem; line-height: 1.5;
     }
 
-    /* ── Form ── */
+    /* ── Entry form ── */
     #form-card {
-      display: none;
-      margin: 20px 24px;
-      background: #1e1510;
-      border: 1px solid #3a2a14;
-      border-radius: 10px;
-      padding: 20px;
+      display: none; margin: 20px 24px;
+      background: #1e1510; border: 1px solid #3a2a14; border-radius: 10px; padding: 20px;
     }
     .form-title { font-size: 1rem; color: #c8a96e; margin-bottom: 16px; font-weight: bold; letter-spacing: 0.04em; }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
-    }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
     .form-field { display: flex; flex-direction: column; gap: 4px; }
     label { font-size: 0.7rem; color: #8a6840; letter-spacing: 0.1em; text-transform: uppercase; }
     input[type="text"], input[type="date"] {
@@ -86,61 +105,42 @@
     input:focus { border-color: #c8a96e; }
     input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6) sepia(0.3); }
     .form-actions { display: flex; gap: 12px; margin-top: 18px; }
-    .save-btn {
-      background: #c8a96e; color: #110d07; border: none; border-radius: 6px;
-      padding: 9px 22px; font-family: Georgia, serif; font-size: 0.9rem; font-weight: bold; cursor: pointer;
-    }
-    .save-btn:hover { opacity: 0.85; }
-    .cancel-btn {
-      background: transparent; color: #8a6840; border: 1px solid #3a2a14;
-      border-radius: 6px; padding: 9px 18px; font-family: Georgia, serif; font-size: 0.9rem; cursor: pointer;
-    }
-    .cancel-btn:hover { opacity: 0.85; }
 
     /* ── Table ── */
     #loading { text-align: center; color: #8a6840; padding: 60px; font-size: 1rem; letter-spacing: 0.1em; }
-
     .table-wrapper {
-      overflow-x: auto;
-      margin: 20px 24px 0;
-      border-radius: 10px;
-      border: 1px solid #3a2a14;
+      overflow-x: auto; margin: 20px 24px 0; border-radius: 10px; border: 1px solid #3a2a14;
     }
     table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
     thead tr { background: #2a1a08; }
     th {
-      color: #c8a96e; padding: 12px 13px; text-align: left;
-      font-weight: normal; letter-spacing: 0.08em; font-size: 0.72rem;
-      text-transform: uppercase; border-bottom: 1px solid #3a2a14; white-space: nowrap;
+      color: #c8a96e; padding: 12px 13px; text-align: left; font-weight: normal;
+      letter-spacing: 0.08em; font-size: 0.72rem; text-transform: uppercase;
+      border-bottom: 1px solid #3a2a14; white-space: nowrap;
     }
     td { padding: 10px 13px; border-bottom: 1px solid #261c0e; vertical-align: top; color: #e8d5b0; line-height: 1.4; }
     tbody tr:nth-child(even) { background: #1e1510; }
     tbody tr:nth-child(odd)  { background: #1a1208; }
     tbody tr:hover td { background: rgba(200,169,110,0.05); }
-
     .score-badge {
       background: #3a2a08; border: 1px solid #c8a96e; color: #c8a96e;
       border-radius: 12px; padding: 2px 10px; font-size: 0.8rem; white-space: nowrap;
     }
     .origine-cell { font-weight: bold; color: #d4b87a; }
     .empty-cell { color: #4a3a24; }
-
     .actions { display: flex; gap: 6px; }
     .edit-btn, .del-btn {
       background: transparent; border: 1px solid #3a2a14;
       border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 0.88rem;
     }
     .edit-btn:hover, .del-btn:hover { border-color: #c8a96e; }
-
     .empty-row td { text-align: center; color: #555; font-style: italic; padding: 36px; }
 
-    /* ── Footer ── */
     footer { text-align: center; color: #4a3a24; font-size: 0.75rem; margin-top: 22px; letter-spacing: 0.1em; }
 
     /* ── Toast ── */
     #toast {
-      display: none;
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: none; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
       background: #c8a96e; color: #110d07; padding: 10px 24px; border-radius: 20px;
       font-family: Georgia, serif; font-size: 0.88rem; font-weight: bold;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 1000; white-space: nowrap;
@@ -150,7 +150,6 @@
       from { opacity: 0; transform: translate(-50%, 14px); }
       to   { opacity: 1; transform: translate(-50%, 0); }
     }
-
     ::-webkit-scrollbar { height: 6px; width: 6px; background: #1a1208; }
     ::-webkit-scrollbar-thumb { background: #3a2a14; border-radius: 3px; }
   </style>
@@ -167,82 +166,191 @@
   </div>
   <div style="display:flex;align-items:center;gap:14px;">
     <span id="status-text"></span>
-    <button class="add-btn" onclick="openAdd()">+ Nieuwe sessie</button>
+    <button class="btn-ghost" onclick="openConfig()" title="Instellingen">⚙️</button>
+    <button class="btn-primary" onclick="openAdd()">+ Nieuwe sessie</button>
   </div>
 </header>
 
-<div id="error-banner"></div>
-
-<div id="form-card">
-  <div class="form-title" id="form-title">➕ Nieuwe koffiesessie</div>
-  <div class="form-grid">
-    <div class="form-field"><label>Datum</label><input type="date" id="f-datum" /></div>
-    <div class="form-field"><label>Koffie / Origine</label><input type="text" id="f-origine" placeholder="bijv. Costa Rica" /></div>
-    <div class="form-field"><label>Maalgraad</label><input type="text" id="f-maalgraad" placeholder="bijv. 14" /></div>
-    <div class="form-field"><label>Gram gemalen</label><input type="text" id="f-gram_gemalen" placeholder="bijv. 18g" /></div>
-    <div class="form-field"><label>Gram espresso</label><input type="text" id="f-gram_espresso" placeholder="bijv. 36g" /></div>
-    <div class="form-field"><label>Looptijd (sec)</label><input type="text" id="f-looptijd" placeholder="bijv. 28" /></div>
-    <div class="form-field"><label>Crème laag</label><input type="text" id="f-creme_laag" placeholder="bijv. dik / dun" /></div>
-    <div class="form-field"><label>Score</label><input type="text" id="f-score" placeholder="bijv. 8.5" /></div>
-    <div class="form-field"><label>Notities</label><input type="text" id="f-notities" placeholder="vrije notitie" /></div>
-  </div>
-  <div class="form-actions">
-    <button class="save-btn" id="save-btn" onclick="handleSave()">Toevoegen</button>
-    <button class="cancel-btn" onclick="cancelForm()">Annuleren</button>
+<!-- ── Config screen ── -->
+<div id="config-screen">
+  <div class="config-card">
+    <h2>🔗 Supabase koppeling</h2>
+    <div id="connected-label"></div>
+    <div class="config-field">
+      <label>Project URL</label>
+      <input type="text" id="cfg-url" placeholder="https://xxxx.supabase.co" />
+    </div>
+    <div class="config-field">
+      <label>Anon Key</label>
+      <input type="text" id="cfg-key" placeholder="eyJhbGciOiJ..." />
+    </div>
+    <div id="config-status"></div>
+    <button class="btn-primary" style="width:100%;padding:12px;" onclick="saveAndTest()">🔗 Verbinding opslaan en testen</button>
+    <button class="btn-danger" onclick="removeConnection()">✕ Verbinding verwijderen</button>
   </div>
 </div>
 
-<div id="loading">Laden…</div>
+<!-- ── Main app ── -->
+<div id="app-screen" style="display:none;">
+  <div id="error-banner"></div>
 
-<div class="table-wrapper" id="table-wrapper" style="display:none;">
-  <table>
-    <thead>
-      <tr>
-        <th style="min-width:110px">Datum</th>
-        <th style="min-width:150px">Koffie / Origine</th>
-        <th style="min-width:95px">Maalgraad</th>
-        <th style="min-width:115px">Gram gemalen</th>
-        <th style="min-width:115px">Gram espresso</th>
-        <th style="min-width:115px">Looptijd (sec)</th>
-        <th style="min-width:105px">Crème laag</th>
-        <th style="min-width:85px">Score</th>
-        <th style="min-width:200px">Notities</th>
-        <th style="min-width:80px">Acties</th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
+  <div id="form-card">
+    <div class="form-title" id="form-title">➕ Nieuwe koffiesessie</div>
+    <div class="form-grid">
+      <div class="form-field"><label>Datum</label><input type="date" id="f-datum" /></div>
+      <div class="form-field"><label>Koffie / Origine</label><input type="text" id="f-origine" placeholder="bijv. Costa Rica" /></div>
+      <div class="form-field"><label>Maalgraad</label><input type="text" id="f-maalgraad" placeholder="bijv. 14" /></div>
+      <div class="form-field"><label>Gram gemalen</label><input type="text" id="f-gram_gemalen" placeholder="bijv. 18g" /></div>
+      <div class="form-field"><label>Gram espresso</label><input type="text" id="f-gram_espresso" placeholder="bijv. 36g" /></div>
+      <div class="form-field"><label>Looptijd (sec)</label><input type="text" id="f-looptijd" placeholder="bijv. 28" /></div>
+      <div class="form-field"><label>Crème laag</label><input type="text" id="f-creme_laag" placeholder="bijv. dik / dun" /></div>
+      <div class="form-field"><label>Score</label><input type="text" id="f-score" placeholder="bijv. 8.5" /></div>
+      <div class="form-field"><label>Notities</label><input type="text" id="f-notities" placeholder="vrije notitie" /></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-primary" id="save-btn" onclick="handleSave()">Toevoegen</button>
+      <button class="btn-ghost" onclick="cancelForm()">Annuleren</button>
+    </div>
+  </div>
+
+  <div id="loading">Laden…</div>
+
+  <div class="table-wrapper" id="table-wrapper" style="display:none;">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:110px">Datum</th>
+          <th style="min-width:150px">Koffie / Origine</th>
+          <th style="min-width:95px">Maalgraad</th>
+          <th style="min-width:115px">Gram gemalen</th>
+          <th style="min-width:115px">Gram espresso</th>
+          <th style="min-width:115px">Looptijd (sec)</th>
+          <th style="min-width:105px">Crème laag</th>
+          <th style="min-width:85px">Score</th>
+          <th style="min-width:200px">Notities</th>
+          <th style="min-width:80px">Acties</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <footer id="footer"></footer>
 </div>
 
-<footer id="footer"></footer>
 <div id="toast"></div>
 
 <script>
-  // ── CONFIG — vul hier je eigen Supabase gegevens in ──────────────────────
-  const SUPABASE_URL  = 'https://wvtvcfmdkyzuptnuawuy.supabase.co';
-  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2dHZjZm1ka3l6dXB0bnVhd3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODQ1MzMsImV4cCI6MjA5NjI2MDUzM30.CjeDeMdy7n3V2w-vy7G3PnEY2nzwTEWZ4fGxfiiI-w0';
-  // ─────────────────────────────────────────────────────────────────────────
-
   const { createClient } = supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-
+  const LS_URL = 'espresso_sb_url';
+  const LS_KEY = 'espresso_sb_key';
   const fields = ['datum','origine','maalgraad','gram_gemalen','gram_espresso','looptijd','creme_laag','score','notities'];
+
+  let db = null;
   let editId = null;
   let toastTimer = null;
 
-  // ── Toast ─────────────────────────────────────────────────────────────────
+  // ── Init ──────────────────────────────────────────────────────────────────
+  function init() {
+    const url = localStorage.getItem(LS_URL);
+    const key = localStorage.getItem(LS_KEY);
+    if (url && key) {
+      db = createClient(url, key);
+      showApp();
+      load();
+    } else {
+      showConfig();
+    }
+  }
+
+  // ── Screens ───────────────────────────────────────────────────────────────
+  function showApp() {
+    document.getElementById('config-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+  }
+
+  function showConfig() {
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('config-screen').style.display = 'block';
+    const url = localStorage.getItem(LS_URL) || '';
+    const key = localStorage.getItem(LS_KEY) || '';
+    document.getElementById('cfg-url').value = url;
+    document.getElementById('cfg-key').value = key;
+    const label = document.getElementById('connected-label');
+    if (url) {
+      const project = url.replace('https://','').split('.')[0];
+      label.textContent = '✓ Gekoppeld aan ' + project;
+      label.style.display = 'block';
+    } else {
+      label.style.display = 'none';
+    }
+    document.getElementById('config-status').textContent = '';
+  }
+
+  function openConfig() { showConfig(); }
+
+  // ── Config: save & test ───────────────────────────────────────────────────
+  async function saveAndTest() {
+    const url = document.getElementById('cfg-url').value.trim();
+    const key = document.getElementById('cfg-key').value.trim();
+    const statusEl = document.getElementById('config-status');
+
+    if (!url || !key) {
+      statusEl.className = 'status-err';
+      statusEl.textContent = '⚠️ Vul beide velden in.';
+      return;
+    }
+
+    statusEl.className = 'status-testing';
+    statusEl.textContent = 'Verbinding testen…';
+
+    try {
+      const testClient = createClient(url, key);
+      const { error } = await testClient.from('espresso_sessies').select('id').limit(1);
+      if (error) throw error;
+
+      localStorage.setItem(LS_URL, url);
+      localStorage.setItem(LS_KEY, key);
+      db = testClient;
+
+      const project = url.replace('https://','').split('.')[0];
+      statusEl.className = 'status-ok';
+      statusEl.textContent = '✓ Verbonden met ' + project;
+
+      const label = document.getElementById('connected-label');
+      label.textContent = '✓ Gekoppeld aan ' + project;
+      label.style.display = 'block';
+
+      setTimeout(() => { showApp(); load(); }, 900);
+    } catch (e) {
+      statusEl.className = 'status-err';
+      statusEl.textContent = '❌ Verbinding mislukt. Controleer je URL en key.';
+    }
+  }
+
+  function removeConnection() {
+    if (!confirm('Verbinding verwijderen? Je koffiedata in Supabase blijft bewaard.')) return;
+    localStorage.removeItem(LS_URL);
+    localStorage.removeItem(LS_KEY);
+    db = null;
+    document.getElementById('connected-label').style.display = 'none';
+    document.getElementById('config-status').textContent = '';
+    document.getElementById('cfg-url').value = '';
+    document.getElementById('cfg-key').value = '';
+    showConfig();
+  }
+
+  // ── Toast / Status ────────────────────────────────────────────────────────
   function showToast(msg) {
     const el = document.getElementById('toast');
     el.textContent = msg;
     el.style.display = 'block';
     el.style.animation = 'none';
-    el.offsetHeight; // reflow
+    el.offsetHeight;
     el.style.animation = 'fadeSlideUp 0.3s ease';
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.style.display = 'none', 2400);
   }
 
-  // ── Status ────────────────────────────────────────────────────────────────
   function setStatus(msg, color) {
     const el = document.getElementById('status-text');
     el.textContent = msg;
@@ -252,6 +360,9 @@
 
   // ── Load ──────────────────────────────────────────────────────────────────
   async function load() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('table-wrapper').style.display = 'none';
+
     const { data, error } = await db
       .from('espresso_sessies')
       .select('*')
@@ -262,24 +373,22 @@
 
     if (error) {
       document.getElementById('error-banner').style.display = 'block';
-      document.getElementById('error-banner').textContent =
-        '⚠️ Kan geen verbinding maken met Supabase. Controleer je SUPABASE_URL en SUPABASE_KEY in index.html.';
+      document.getElementById('error-banner').textContent = '⚠️ Kan geen data ophalen. Controleer je Supabase instellingen via ⚙️.';
     } else {
+      document.getElementById('error-banner').style.display = 'none';
       renderTable(data);
     }
   }
 
-  // ── Render table ──────────────────────────────────────────────────────────
+  // ── Render ────────────────────────────────────────────────────────────────
   function renderTable(data) {
     const tbody = document.getElementById('tbody');
     tbody.innerHTML = '';
-
     if (!data || data.length === 0) {
       tbody.innerHTML = '<tr class="empty-row"><td colspan="10">Nog geen sessies. Voeg je eerste koffie toe!</td></tr>';
       document.getElementById('footer').textContent = '0 sessies gelogd';
       return;
     }
-
     data.forEach(row => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -295,24 +404,20 @@
         <td>
           <div class="actions">
             <button class="edit-btn" onclick="startEdit(${row.id})" title="Bewerken">✏️</button>
-            <button class="del-btn"  onclick="handleDelete(${row.id})" title="Verwijderen">🗑️</button>
+            <button class="del-btn" onclick="handleDelete(${row.id})" title="Verwijderen">🗑️</button>
           </div>
-        </td>
-      `;
+        </td>`;
       tbody.appendChild(tr);
     });
-
     const n = data.length;
     document.getElementById('footer').textContent = `${n} sessie${n !== 1 ? 's' : ''} gelogd`;
   }
 
-  // ── Form helpers ──────────────────────────────────────────────────────────
+  // ── Form ──────────────────────────────────────────────────────────────────
   function openAdd() {
+    if (!db) { openConfig(); return; }
     editId = null;
-    fields.forEach(f => {
-      document.getElementById('f-' + f).value = f === 'datum'
-        ? new Date().toISOString().slice(0, 10) : '';
-    });
+    fields.forEach(f => document.getElementById('f-' + f).value = f === 'datum' ? new Date().toISOString().slice(0,10) : '');
     document.getElementById('form-title').textContent = '➕ Nieuwe koffiesessie';
     document.getElementById('save-btn').textContent = 'Toevoegen';
     document.getElementById('form-card').style.display = 'block';
@@ -330,12 +435,10 @@
     return obj;
   }
 
-  // ── Add / Edit ────────────────────────────────────────────────────────────
   async function handleSave() {
     const data = getFormData();
     if (!data.origine) { document.getElementById('f-origine').focus(); return; }
     setStatus('opslaan…');
-
     if (editId) {
       const { error } = await db.from('espresso_sessies').update(data).eq('id', editId);
       if (error) { setStatus('❌ fout', '#e07060'); showToast('❌ Fout bij opslaan'); return; }
@@ -345,7 +448,6 @@
       if (error) { setStatus('❌ fout', '#e07060'); showToast('❌ Fout bij opslaan'); return; }
       showToast('Sessie toegevoegd ☕');
     }
-
     setStatus('✓ opgeslagen');
     setTimeout(() => setStatus(''), 2000);
     cancelForm();
@@ -372,8 +474,7 @@
   }
 
   // ── Start ─────────────────────────────────────────────────────────────────
-  load();
+  init();
 </script>
-
 </body>
 </html>
