@@ -6,6 +6,10 @@
   <meta name="theme-color" content="#110d07" />
   <meta name="description" content="Cafe Toscane — espresso logboek" />
   <meta name="apple-mobile-web-app-title" content="Cafe Toscane" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <title>Cafe Toscane</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -397,6 +401,13 @@
   }
 
   init();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
 </script>
 </body>
 </html>
